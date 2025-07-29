@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>スマートチケット受付中</title>
+  <script>
+    // Supabase設定
+    const SUPABASE_URL = 'https://xxxx.supabase.co';  // ←自分のURL
+    const SUPABASE_ANON_KEY = 'your-anon-key';        // ←自分のキー
+
+    async function logTicketAccess() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ticketId = urlParams.get('ticket') || 'unknown';
+
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js');
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Supabaseに保存
+      const { error } = await supabase.from('ticket_logs').insert([
+        { ticket_id: ticketId, timestamp: new Date().toISOString() }
+      ]);
+
+      // チャットボットにリダイレクト
+      setTimeout(() => {
+        window.location.href = "https://your-chatbot-url.com?ticket=" + ticketId;
+      }, 2000);
+    }
+
+    window.onload = logTicketAccess;
+  </script>
+</head>
+<body>
+  <h2>チケットを確認中...</h2>
+</body>
+</html>
