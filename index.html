@@ -1,24 +1,49 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>MECAL TOKYO チケット</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MECAL TOKYO チケット確認</title>
 </head>
 <body>
-  <h1>ようこそ MECAL TOKYO へ！</h1>
-  <p id="ticket-info">チケット番号を確認中です...</p>
+  <h1>チケット受付ページ</h1>
+  <p id="ticket-info">読み込み中...</p>
 
-  <script>
-    // URLのパラメータを取得
-    const params = new URLSearchParams(window.location.search);
-    const ticketId = params.get('ticket');
+  <script type="module">
+    // URLからパラメータ取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketId = urlParams.get('ticket');
 
+    // 表示更新
+    const info = document.getElementById('ticket-info');
     if (ticketId) {
-      document.getElementById('ticket-info').innerText = `このチケット番号は：${ticketId} です。`;
-      // ここでSupabaseに送信などが可能（後述）
-      console.log("アクセスチケットID:", ticketId);
+      info.textContent = `チケット番号: ${ticketId} を確認しました。`;
+
+      // Supabaseに保存処理（記録のみの例）
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+      const supabaseUrl = "https://xxxxxxxx.supabase.co"; // ← あなたのSupabase URLに置き換え
+      const supabaseKey = "public-anon-key"; // ← あなたの公開キーに置き換え
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      const logTicket = async () => {
+        const { data, error } = await supabase
+          .from('questionnaires')
+          .insert([
+            { ticket_id: ticketId, status: 'アクセス済み' }
+          ]);
+
+        if (error) {
+          console.error('Supabase登録エラー:', error.message);
+          info.textContent += "（保存に失敗しました）";
+        } else {
+          console.log('Supabaseに保存完了:', data);
+        }
+      };
+
+      logTicket();
+
     } else {
-      document.getElementById('ticket-info').innerText = `チケット情報が見つかりません。URLを確認してください。`;
+      info.textContent = "チケット番号がURLに含まれていません。";
     }
   </script>
 </body>
