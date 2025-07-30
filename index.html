@@ -2,10 +2,24 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>スマートチケット</title>
+  <title>MECAL TOKYO チケット</title>
 </head>
 <body>
-  <h1>ようこそ！スマートチケットへ</h1>
-  <p>このページは正しく表示されています。</p>
+  <h1>ようこそ MECAL TOKYO へ！</h1>
+  <p id="ticket-info">チケット番号を確認中です...</p>
+
+  <script>
+    // URLのパラメータを取得
+    const params = new URLSearchParams(window.location.search);
+    const ticketId = params.get('ticket');
+
+    if (ticketId) {
+      document.getElementById('ticket-info').innerText = `このチケット番号は：${ticketId} です。`;
+      // ここでSupabaseに送信などが可能（後述）
+      console.log("アクセスチケットID:", ticketId);
+    } else {
+      document.getElementById('ticket-info').innerText = `チケット情報が見つかりません。URLを確認してください。`;
+    }
+  </script>
 </body>
 </html>
