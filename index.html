@@ -2,49 +2,38 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MECAL TOKYO チケット確認</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MECAL TOKYO｜チケット受付</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f9f9f9;
+    }
+    .ticket-box {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+    .ticket-number {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h1>チケット受付ページ</h1>
-  <p id="ticket-info">読み込み中...</p>
+  <div class="ticket-box">
+    <h1>MECAL TOKYO</h1>
+    <p>ようこそ。こちらはチケット受付ページです。</p>
+    <div class="ticket-number" id="ticket-number">読み込み中...</div>
+  </div>
 
-  <script type="module">
-    // URLからパラメータ取得
-    const urlParams = new URLSearchParams(window.location.search);
-    const ticketId = urlParams.get('ticket');
-
-    // 表示更新
-    const info = document.getElementById('ticket-info');
-    if (ticketId) {
-      info.textContent = `チケット番号: ${ticketId} を確認しました。`;
-
-      // Supabaseに保存処理（記録のみの例）
-      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-      const supabaseUrl = "https://xxxxxxxx.supabase.co"; // ← あなたのSupabase URLに置き換え
-      const supabaseKey = "public-anon-key"; // ← あなたの公開キーに置き換え
-      const supabase = createClient(supabaseUrl, supabaseKey);
-
-      const logTicket = async () => {
-        const { data, error } = await supabase
-          .from('questionnaires')
-          .insert([
-            { ticket_id: ticketId, status: 'アクセス済み' }
-          ]);
-
-        if (error) {
-          console.error('Supabase登録エラー:', error.message);
-          info.textContent += "（保存に失敗しました）";
-        } else {
-          console.log('Supabaseに保存完了:', data);
-        }
-      };
-
-      logTicket();
-
-    } else {
-      info.textContent = "チケット番号がURLに含まれていません。";
-    }
-  </script>
+  <!-- script.js を読み込む -->
+  <script src="script.js"></script>
 </body>
 </html>
+
